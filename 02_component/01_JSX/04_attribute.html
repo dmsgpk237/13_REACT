@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .highlight { background-color: aqua;}
+    </style>
+</head>
+<body>
+    <div id = "root"></div>
+
+
+    <script type = "text/babel">
+        
+        const id = 'title';
+        const className = 'highlight';
+        
+        <!-- 
+            JSX 문법에서 속성값을 부여하는 방식
+
+            1. javaScript 표현식을 이용해서 정의 {}
+            2. 문자열로 속성값을 정의하는 방식
+            -> 이벤트 관련된 속성이 적용 안 됨.
+        -->
+        // // 내가 외워야 할 것!
+        // const element = <h1 id={id} className={className} onClick={}>Hello World</h1>
+        
+        // function test() {
+        //     console.log('클릭했네');
+        // }
+
+        
+        // 2. 문자열로 속성값 정의하는 방법
+        // *문자열로 속성값 정의하는 방법은 이벤트 관련 어트리뷰트가 적용되지 않는다.
+        const element <h1 id='title' classNemr='highlight' onClick='test'>Hello World</h1>
+
+        function test() {
+            console.log('클릭했네');
+        }
+        ReactDOM.createRoot(document.getElementById('root')).render(element);
+    </script>
+</body>
+</html>
