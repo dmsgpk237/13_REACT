@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id = "root"></div>
+
+    
+
+    <script type = "text/babel">
+        const {useState} = React;
+        
+        function Say(){
+            console.log(useState('기본값'));
+            
+            // const[이름, set이름] = useState('구찌') 이렇게 사용해도 됨
+            const [name, setName] = useState('감자')
+            const [messge, setMessge] = useState('기본상태')
+            const [color, setColor] = useState('black')
+            const [backgroundColor, setBackgroundColor] = useState('white')
+            
+            // 각각의 state에 해당하는 setter 메소드로 state를 수정할 때마다
+            // 함수형 컴포넌트가 다시 실행된다(리렌더링)
+            const onClickEnter = () => setMessge('안녕하세요!')
+            const onClickLeave = () => setMessge('안녕히 가세요!')
+
+            return(
+                <>
+                    <h1 style={{color : color, backgroundColor : backgroundColor}}>{messge}</h1>
+                    <div>
+                        <button onClick={onClickEnter}>입장</button>
+                        <button onClick={onClickLeave}>퇴장</button>
+                    </div>
+                    
+                    <div>
+                        <button onClick={() => setColor('red')}>글자색 변경</button>
+                        <button onClick={() => setColor('purple')}>글자색 변경</button>
+                        <button onClick={() => setColor('green')}>글자색 변경</button>
+                    </div>
+
+                    <div>
+                        <button onClick={() => setBackgroundColor('yellow')}>배경색 변경</button>
+                        <button onClick={() => setBackgroundColor('pink')}>배경색 변경</button>
+                    </div>
+                </>
+            )
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<Say/>);
+    </script>
+</body>
+</html>

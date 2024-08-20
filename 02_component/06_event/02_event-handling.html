@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id = "root"></div>
+
+
+    <script type = "text/babel">
+        class EventComponent extends React.Component{
+
+            state = {
+                messge: ''
+            }
+
+            render() {
+                return(
+                    <>
+                        <h1>이벤트 핸들링</h1>
+                        <input
+                            type='text'
+                            name='messge'
+                            placeholder='텍스트를 입력해주세요'
+                            onChange={
+                                (e) => {
+                                    console.log(e.target.value);
+                                    this.setState({
+                                        messge: e.target.value
+                                    })
+                                }
+                            }
+                            value={this.state.messge}
+                        />
+                        {/*버튼으로 input 태그에 들어간 값을 초기화 시켜보기
+                            근데 이거 버튼 코드를 알아보기 힘드니까 분리시켜서 사용함.*/}
+                        
+                        <button
+                            onClick={
+                                () => {
+                                    alert(`${this.state.messge} 지워짐!`);
+                                    this.setState({
+                                        messge:''
+                                    });
+                                }
+                            }
+                            >확인</button>
+                    </>
+            
+                )
+            }
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<EventComponent/>);
+    </script>
+</body>
+</html>
