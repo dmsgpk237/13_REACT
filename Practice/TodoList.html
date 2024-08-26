@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body{
+            background-color: rgb(245, 255, 159);
+        }
+        :root{
+            text-align: center;
+            /* align-items: center; */
+        }
+        header{
+            background-color: rgb(210, 195, 218);
+            color: rgb(75, 7, 49);
+            width: 100%;
+            margin-top: -10px;
+            margin-left: -10px;
+            text-align: center;
+            padding: 1%;
+        }
+        footer{
+            background-color: rgb(210, 195, 218);
+            color: rgb(75, 7, 49);
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            padding: 5px 0;
+        }
+        .foot{
+            margin-left: -10px;
+            padding: 1%
+        }
+        .content{
+            display: flex;
+            justify-content: center;
+            /* align-items: center; */
+            height: 40vh;
+        }
+        .content-menu{
+            text-align: left;
+            background-color: white;
+            width: 50%;
+            border: 2px solid rgb(255, 177, 210); 
+            padding: 20px 40px;
+            height: 85%; /* 높이를 설정합니다. */
+        }
+        #btn{
+            background-color: rgb(255, 76, 180);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: none;
+        }
+        .weather{
+            border: 1px dotted rgb(251, 255, 0);
+            background-color: white;
+            padding: -5%;
+            width: 20%;
+            height: 15%;
+            margin-left: 80%;
+            /* display: flex; */
+            justify-content: center;
+        }
+
+        .h6{
+            margin: 2%;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎀권은혜의 TO DO LIST🎀</h1>
+    </header>
+    <div id = "root"></div>
+
+
+    <script type = "text/babel">
+        
+        const {useEffect, useState} = React;
+
+        const API_KEY = 'eec588e74b6aaaed6e6515edf8563c07';
+
+        // 날씨정보 컴포넌트
+        function Weather() {
+            
+            const [position, setPosition] = useState({}); // 위치 정보
+            const [weather, setWeather] = useState({}); // 날씨 정보 객체
+            const [wind, setWind] = useState({}); // 바람 정보 객체
+            const [emoji, setEmoji] = useState();
+
+            // 위도, 경도도 비동기 함수다 그럼 useEffect에 써야 한다. 
+            useEffect(() => {
+                new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition((currentPosition) =>{
+                        setPosition({
+                            longitude: currentPosition.coords.longitude,
+                            latitude: currentPosition.coords.latitude 
+                        });
+
+                        resolve(currentPosition.coords);
+                        
+                    });
+                }).then(coords => {
+                    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.latitude}&lon=${coords.longitude}&exclude={part}&appid=${API_KEY}`)
+                    .then(response => response.json()) 
+                    .then(json => {
+                        setWeather(json.weather[0]);
+                        setWind(json.wind);
+                        
+                        let emojiName = '';
+                        switch (json.weather[0].main) {
+
+                                case 'Clear': emojiName = 'sunny'; break;
+
+                                case 'Rain': emojiName = 'umbrella'; break;
+
+                                case 'Thunderstorm': emojiName = 'cloud_with_lightning_and_rain'; break;
+                                    
+                                case 'Drizzle': emojiName = 'cloud_with_rain'; break;
+
+                                case 'Snow': emojiName = 'snowman'; break;
+
+                                case 'Clouds': emojiName = 'cloud'; break;
+
+                                case 'Atomsphere': emojiName = 'airplane'; break;
+
+                                case 'Mist' : emojiName = 'shower'; break;
+
+                            }
+                        
+                            fetch('https://api.github.com/emojis')
+                            .then(response => {
+                                return response.json()
+                            }).then(result => {
+
+                                const emojiUrl = result[emojiName];
+                                setEmoji(emojiUrl); 
+                        })
+                    })
+                })
+            }, [])
+
+            return(
+                <div className="weather">
+                    <h6 className="h6">[오늘의 날씨 정보]</h6>
+                    <h6 className="h6">{`날씨 : ${weather.main} | ${weather.description}`}</h6>
+                    <h6 className="h6">{`픙향 : ${wind.deg}도 | 풍속 : ${wind.speed}m/s`} </h6>
+                    <h1 className="h6">{<img src={emoji}/>}</h1>
+                </div>   
+            )
+        }
+
+        function App(){
+            const [todos, setTodos] = useState([
+                {id: 1, todo: '🍜🍖끝내주게 밥먹기🍕🍟', checked: false},
+                {id: 2, todo: '💨끝내주게 숨쉬기💨', checked: false},
+            ]);
+            
+            const [inputText, setInputText] = useState('');
+            const [nextId, setNextId] = useState(3);
+            
+            const onChangeHandler = e => setInputText(e.target.value);
+
+            const onClickHandler = () => {
+                const newTodo = {
+                    id: nextId,
+                    todo: inputText,
+                    checked: false
+                };
+
+                const todosCopy = [...todos, newTodo];
+
+                setNextId(nextId + 1);
+
+                // 체크된 항목은 리스트 끝으로 이동
+                todosCopy.sort((a, b) => a.checked - b.checked);
+
+                setTodos(todosCopy);
+                setInputText('');
+            }
+
+            const onKeyPressHandler = (e) => {
+                if (e.key === 'Enter') {
+                    onClickHandler();
+                }
+            };
+
+            const onRemove = id => {
+                const confirmRemove = window.confirm('삭제 하시겠습니까?');
+                if (confirmRemove) {
+                    const changeTodos = todos.filter(todo => todo.id !== id);
+                    setTodos(changeTodos);
+                }
+            };
+
+            const onCheckHandler = id => {
+                const updatedTodos = todos.map(todo =>
+                    todo.id === id ? { ...todo, checked: !todo.checked } : todo
+                );
+
+                // 체크된 항목은 리스트 끝으로 이동
+                updatedTodos.sort((a, b) => a.checked - b.checked);
+
+                setTodos(updatedTodos);
+            };
+
+            return(
+                <div>
+                    <Weather/>                    
+                    <div className="content">
+                        <div className="content-menu">
+                            <ul>
+                                {todos.map((todo) => (
+                                    <MyToDo 
+                                        todo={todo.todo}
+                                        key={todo.id}
+                                        id={todo.id}
+                                        checked={todo.checked}
+                                        onRemove={onRemove}
+                                        onCheckHandler={onCheckHandler}
+                                    />
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                    <ul>
+                        <input 
+                            value={inputText} 
+                            onChange={onChangeHandler}
+                            onKeyPress={onKeyPressHandler}  // 엔터키로 추가
+                        />
+                        <button id="btn" onClick={onClickHandler}>추가하기</button>
+                    </ul> 
+                </div>
+            )
+        }
+
+        function MyToDo({todo, id, checked, onRemove, onCheckHandler}){
+            return(
+                <div>
+                    <input 
+                        type="checkbox" 
+                        name="color"
+                        checked={checked}
+                        onChange={() => onCheckHandler(id)}
+                    />
+                    <span style={{ textDecoration: checked ? 'line-through' : 'none'}}>
+                        {todo}
+                    </span>
+                    <span
+                        style={{ marginLeft: '10px', cursor: 'pointer'}}
+                        onClick={() => onRemove(id)}
+                    >
+                        ❌
+                    </span>
+                </div>
+            )
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+
+    <footer className="foot">
+        <div >
+            <h5>copyright 2022. team-greedy all rights reserved.</h5>
+        </div>  
+    </footer>
+</body>
+</html>
