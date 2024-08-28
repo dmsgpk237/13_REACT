@@ -10,7 +10,7 @@ function Navbar() {
         <ul>
             <li><NavLink to="/" style={({isActive}) => isActive? activeStyle : undefined}>Home</NavLink></li>
             <li><NavLink to="/info" style={({isActive}) => isActive? activeStyle : undefined}>소개</NavLink></li>
-            <li><NavLink to="/menuList" style={({isActive}) => isActive? activeStyle : undefined}>메뉴목록</NavLink></li>
+            <li><NavLink to="/menu" style={({isActive}) => isActive? activeStyle : undefined}>메뉴목록</NavLink></li>
         </ul>
         </>
     )
