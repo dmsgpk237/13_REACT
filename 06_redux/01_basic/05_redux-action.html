@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/redux@4.2.0/dist/redux.js"></script>
+    <script src="https://unpkg.com/react-redux@8.0.4/dist/react-redux.js"></script>
+    <script src="https://unpkg.com/redux-actions@2.6.5/dist/redux-actions.js"></script>
+    <!-- 액션을 좀 더 편하게, 리듀서를 좀 더 편하게 만들 수 있게 할 것임. -->
+</head>
+<body>
+    <div id = "root"></div>
+    <!-- 
+        이전에 우리가 만들던 액션들은 객체로 만들어야 하고, 타입을 다 지정해줘야 함. 
+        개수가 점점 많아질텐데 하나하나 액션을 만들어주는 것이 어려워짐. 그래서 createAction이 나온 것임.
+    -->
+
+    <script type = "text/babel">
+        const { Provider, useSelector, useDispatch } = ReactRedux;
+        const { createStore } = Redux;
+        const { createAction, createActions, handleActions } = ReduxActions;
+
+        /* 초기값 */
+        const initialState = 0;
+
+        /* 액션 */
+        // 액션 타입을 상수로 지정하고, 접두사를 붙여준다.
+        const INCREMENT = 'count/INCREASE'; // 동사적으로 표현하는게 좋음. 
+        const DECREMENT = 'count/DECREASE'; 
+
+        // 1. createAction 사용
+        // const increase = createAction(INCREMENT, (amount = 1) => ({increaseValue: amount}))
+        // const decrease = createAction(DECREMENT, (amount = 1) => ({decreaseValue: amount}))
+
+        // // increase에 넘겨주는 값이 amount로 들어간다.
+        // console.log(increase()); // action 객체
+        // console.log(decrease());
+
+        // 2. createActions 사용
+        // 2-1. 1번째 방법
+        /* 한 번의 createActions 호출로 객체를 반환하는 메소드들을 한 번에 정의할 수 있다. */
+        // const action = createActions({
+        //     ['count/INCREASE']: (amount = 1) => ({incrementValue : amount}),
+        //     ['count/DECREASE']: (amount = 1) => ({decrementValue : amount}),
+            
+        //     // [INCREMENT]: (amount = 1) => ({incrementValue : amount}),
+        //     // [DECREMENT]: (amount = 1) => ({decrementValue : amount}),
+        // });
+        // console.log(action);
+        // console.log(action.count.increase());
+
+        // 2-1. 2번째 방법
+        // 이중 구조분해할당
+        const {count: {increase, decrease}} = createActions({
+            // ['count/INCREASE']: (amount = 1) => ({incrementValue : amount}),
+            // ['count/DECREASE']: (amount = 1) => ({decrementValue : amount}),
+            
+            [INCREMENT]: (amount = 1) => ({incrementValue : amount}),
+            [DECREMENT]: (amount = 1) => ({decrementValue : amount}),
+        });
+        console.log(increase());
+        console.log(decrease());
+        
+
+        /* 리듀서 */
+
+        // 3. handleActions 사용
+        // switch문을 사용하지 않고 action에 따라 state를 처리하는 리듀서 생성
+        const reducer = handleActions(
+            {
+                [INCREMENT]: (state, {payload: {incrementValue}}) => {
+                    return state + incrementValue;
+                },
+                [DECREMENT]: (state, {payload: {decrementValue}}) => {
+                    return state - decrementValue;
+                },
+            },
+            initialState // 초기값을 여기에 지정
+        )
+
+
+
+
+        /* ------------------------------------------------------------------- */
+
+        /* 컴포넌트 */
+        function App() {
+            const count = useSelector(state => state)
+            const dispatch = useDispatch();
+
+            const increaseCount = () => {
+                dispatch(increase());
+            }
+
+            const decreaseCount = () => {
+                dispatch(decrease());
+            }
+
+            return(
+                <>
+                    <h1>Count: {count}</h1>
+                    <button onClick={increaseCount}>증가</button>
+                    <button onClick={decreaseCount}>감소</button>
+                </>
+            )
+        }
+        /* ------------------------------------------------------------------- */
+
+        /* 스토어 */
+        const store = createStore(reducer,
+        window.__REDUX_DEVTOOLS_EXTENSION__&& window.__REDUX_DEVTOOLS_EXTENSION__()
+
+        );
+
+        /* ------------------------------------------------------------------- */
+
+        ReactDOM.createRoot(document.getElementById('root')).render(
+        <Provider store={store}>    
+        <App/>
+        </Provider>
+        );
+    </script>
+</body>
+</html>
