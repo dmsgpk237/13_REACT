@@ -10,23 +10,16 @@
 </head>
 <body>
     <div id = "root"></div>
-    
-    <!-- 
-        1. 사용자가 input 필드에 값을 입력하면 onChangeHandler 함수가 호출됩니다.
-        2. 이 함수는 이벤트 객체(e.target)를 dispatch에 전달합니다.
-        3. dispatch는 이 이벤트 객체를 reducer 함수에 전달합니다.
-        4. reducer 함수는 상태 객체에서 name과 nickname 중 입력된 필드의 값을 업데이트한 새로운 상태를 반환합니다.
-        5. 이 새로운 상태가 state에 저장되고, 컴포넌트는 업데이트된 상태에 따라 다시 렌더링됩니다.
-    -->
+
 
     <script type = "text/babel">
-        
+
         const {useReducer} = React;
 
         function reducer(state, action) {
-            return{
-                ...state, // 현재 컴포넌트 상태(name, nickname을 가짐)를 유지
-                [action.name]: action.value // 액션의 이름에 해당하는 상태를 액션의 값으로 업데이트
+            return {
+                ...state,
+                [action.name]: action.value
             }
         }
 
@@ -36,28 +29,27 @@
                 nickname:''
             });
 
-            //구조분해할당
+            // 구조분해할당
             const {name, nickname} = state;
-            
-            const onChangeHandler = e => dispatch(e.target)
 
-            return(
+            const onChangeHandler = e => dispatch(e.target)
+            return (
                 <>
-                    <label>이름 : </label>
+                    <label>이름 :</label>
                     <input type="text" name='name' onChange={onChangeHandler}/>
                     <br/>
-                    <label>닉네임 : </label>
+                    <label>닉네임 :</label>
                     <input type="text" name='nickname' onChange={onChangeHandler}/>
                     <br/>
                     <div>
                         <h3>입력한 이름 : {name}</h3>
                         <h3>입력한 닉네임 : {nickname}</h3>
-
                     </div>
+                    
                 </>
             )
-            
         }
+        
         ReactDOM.createRoot(document.getElementById('root')).render(<RegistForm/>);
     </script>
 </body>

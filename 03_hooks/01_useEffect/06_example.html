@@ -5,118 +5,84 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    
-    <!-- React 라이브러리를 불러오는 스크립트 -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <!-- Babel을 사용하여 JSX를 브라우저에서 바로 트랜스파일링 -->
     <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <!-- React 애플리케이션을 렌더링할 HTML 요소 -->
     <div id="root"></div>
-    
     <script type="text/babel">
-
-        // useState: 컴포넌트 내에서 상태를 관리할 수 있게 해주는 훅.
-        // useEffect: 컴포넌트가 렌더링될 때마다 특정 부수 효과를 수행하거나, 컴포넌트가 언마운트되기 전에 정리 작업을 할 수 있게 해주는 훅.
-        // 부수 효과 :  데이터 가져오기, 구독, DOM 업데이트, 타이머 설정등과 같은 효과 처리      
-    
-        // React로부터 useState와 useEffect를 추출하여 사용할 수 있게 선언
+        
         const { useState, useEffect } = React;
 
-        // 타이핑 게임 컴포넌트 정의
         function TypingGame({ text, isDone, setIsDone }) {
-            // 입력한 텍스트를 저장하는 상태 변수
+
             const [input, setInput] = useState('');
 
-            // 컴포넌트가 마운트될 때와 언마운트될 때 실행되는 부수 효과 설정
             useEffect(
                 () => {
-                    // 컴포넌트가 마운트될 때의 시작 시간을 기록
                     const start = new Date().getTime();
 
-                    // 컴포넌트가 언마운트될 때 실행되는 정리 함수
                     return () => {
-                        // 컴포넌트가 언마운트될 때의 종료 시간을 기록
                         const end = new Date().getTime();
 
-                        // 컴포넌트가 렌더링된 시간을 계산
                         const interval = end - start;
 
-                        // 경과된 시간을 밀리초로 표시하는 알림 창을 띄움
                         alert(`${ interval } (ms)`);
                     }
                 },
-                [] // 빈 배열을 전달하여, 이 효과가 마운트와 언마운트 시에만 실행되도록 함
+                []
             );
 
-            // 키를 눌렀을 때 실행되는 이벤트 핸들러
             const onKeyPressHandler = (e) => {
-                // 엔터 키가 눌렸을 때 실행
                 if(e.key == 'Enter') {
-                    // 입력된 텍스트가 정답과 일치하는지 확인
                     if(text === input) {
-                        // 정답이 맞으면 게임 완료 상태를 토글
                         setIsDone(!isDone);
                     }
                 }
             }
 
-            // 컴포넌트의 렌더링 내용
             return (
                 <>
-                    <h1>{ text }</h1> {/* 게임에서 맞춰야 할 텍스트 */}
+                    <h1>{ text }</h1>
                     <input 
                         type="text" 
-                        onChange={ (e) => setInput(e.target.value) }  {/* 입력이 변경될 때 input 상태를 업데이트 */}
-                        onKeyPress={ onKeyPressHandler }  {/* 키를 누를 때 실행되는 핸들러 */}
-                        value={ input }  {/* input 상태를 인풋 필드의 값으로 설정 */}
+                        onChange={ (e) => setInput(e.target.value) } 
+                        onKeyPress={ onKeyPressHandler }
+                        value={ input }
                     />
                 </>
             );
         }
 
-        // 메인 애플리케이션 컴포넌트 정의
         function App() {
-            // 게임 컴포넌트가 표시되는지 여부를 관리하는 상태
+            
             const [isShow, setIsShow] = useState(false);
-
-            // 게임이 완료되었는지 여부를 관리하는 상태
             const [isDone, setIsDone] = useState(false);
-
-            // 맞춰야 할 텍스트를 관리하는 상태
             const [text, setText] = useState('');
 
-            // 컴포넌트가 처음 렌더링될 때 실행되는 부수 효과
+            // 주석을 달아서 정리 해보세요
             useEffect(
                 () => {
-                    // 사용자에게 텍스트 입력을 요청하고 이를 text 상태에 저장
                     setText(prompt('문자열을 입력해주세요'));
                 },
-                [] // 빈 배열을 전달하여, 이 효과가 마운트 시에만 실행되도록 함
+                []
             );
             
-            // isDone 상태가 변경될 때마다 실행되는 부수 효과
             useEffect(
                 () => {
-                    // isShow 상태를 토글하여 게임 컴포넌트를 표시하거나 숨김
                     setIsShow(!isShow);
                 },
-                [isDone] // isDone이 변경될 때만 이 효과가 실행됨
+                [isDone]
             );
 
-            // 컴포넌트의 렌더링 내용
             return (
                 <>
-                    {/* isShow가 true일 때만 TypingGame 컴포넌트를 렌더링 */}
                     { isShow && <TypingGame text={ text } isDone={ isDone } setIsDone={ setIsDone }/> }
                 </>
             );
         }
 
-        // ReactDOM을 사용하여 App 컴포넌트를 root 요소에 렌더링
         ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
     </script>
 </body>
